@@ -1,31 +1,27 @@
-graph.cpp
 #include "graph.h"
 
 void initializeGraph(pVERTEX* vertices, pNODE* adjList[], int n) {
     for (int i = 0; i < n; i++) {
-        vertices[i] = new TAG_VERTEX{i, DBL_MAX, -1};
+        vertices[i]->index = i;
+        vertices[i]->key = DBL_MAX;
+        vertices[i]->pi = -1;
         adjList[i] = nullptr;
     }
 }
 
 void addEdge(pNODE* adjList[], int u, pVERTEX v, double w) {
-    pNODE newNode = new TAG_NODE{u, v, w, nullptr};
+    TAG_NODE* newNode = new TAG_NODE;
+    newNode->u = u;
+    newNode->v = v;
+    newNode->w = w;
+    newNode->next = nullptr;
+
     if (!adjList[u]) {
         adjList[u] = newNode;
     } else {
-        pNODE current = adjList[u];
-        while (current->next) current = current->next;
-        current->next = newNode;
-    }
-}
-
-void printGraph(pNODE* adjList[], int n) {
-    for (int i = 0; i < n; i++) {
-        printf("ADJ[%d]:", i + 1);
-        for (pNODE node = adjList[i]; node != nullptr; node = node->next) {
-            printf("-->[ %d %.2f ]", node->v->index + 1, node->w);
-        }
-        printf("\n");
+        TAG_NODE* curr = adjList[u];
+        while (curr->next) curr = curr->next;
+        curr->next = newNode;
     }
 }
 
@@ -39,21 +35,25 @@ void relax(pVERTEX u, pNODE node) {
 void dijkstra(pVERTEX* vertices, pNODE* adjList[], int startIndex, int n) {
     vertices[startIndex]->key = 0;
 
-    bool visited[n] = {false};
+    // Simple array-based selection for minimum (for clarity)
+    bool visited[n];
+    for (int i = 0; i < n; i++) visited[i] = false;
 
-    for (int i = 0; i < n; i++) {
-        // find min key
+    for (int count = 0; count < n; count++) {
+        // Find min key among unvisited
         double minKey = DBL_MAX;
         int uIndex = -1;
-        for (int j = 0; j < n; j++) {
-            if (!visited[j] && vertices[j]->key < minKey) {
-                minKey = vertices[j]->key;
-                uIndex = j;
+        for (int i = 0; i < n; i++) {
+            if (!visited[i] && vertices[i]->key <= minKey) {
+                minKey = vertices[i]->key;
+                uIndex = i;
             }
         }
-        if (uIndex == -1) break; // all reachable processed
+
+        if (uIndex == -1) break; // All reachable vertices visited
         visited[uIndex] = true;
-        for (pNODE node = adjList[uIndex]; node != nullptr; node = node->next) {
+
+        for (TAG_NODE* node = adjList[uIndex]; node != nullptr; node = node->next) {
             relax(vertices[uIndex], node);
         }
     }
@@ -61,11 +61,11 @@ void dijkstra(pVERTEX* vertices, pNODE* adjList[], int startIndex, int n) {
 
 void printShortestPath(pVERTEX* vertices, int startIndex, int endIndex) {
     if (endIndex == startIndex) {
-        printf("%d ", startIndex + 1);
+        printf("%d ", startIndex);
     } else if (vertices[endIndex]->pi == -1) {
-        printf("No path from %d to %d\n", startIndex + 1, endIndex + 1);
+        printf("No path from %d to %d\n", startIndex, endIndex);
     } else {
         printShortestPath(vertices, startIndex, vertices[endIndex]->pi);
-        printf("%d ", endIndex + 1);
+        printf("%d ", endIndex);
     }
 }
