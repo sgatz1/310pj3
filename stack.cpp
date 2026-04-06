@@ -5,7 +5,7 @@ pSTACK createStack(int capacity) {
     pSTACK S = new STACK;
     S->top = -1;
     S->capacity = capacity;
-    S->arr = new pELEMENT[capacity];  // now pELEMENT is defined
+    S->arr = new pELEMENT[capacity];  // array of ELEMENT pointers
     return S;
 }
 
@@ -18,13 +18,4 @@ pELEMENT pop(pSTACK S) {
     if (S->top >= 0)
         return S->arr[S->top--];
     return nullptr;
-}
-
-bool isEmptyStack(pSTACK S) {
-    return S->top == -1;
-}
-
-void freeStack(pSTACK S) {
-    delete[] S->arr;
-    delete S;
 }
