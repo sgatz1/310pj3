@@ -1,20 +1,27 @@
 #include <iostream>
-#include "data_structures.h"
 #include "graph.h"
+#include "data_structures.h"
 
 int main() {
-    int n = 5;
-    // allocate vertex array
+    int n = 5; // number of vertices
     pVERTEX* vertices = new pVERTEX[n];
-    for (int i = 0; i < n; ++i)
+
+    // Initialize vertices
+    for (int i = 0; i < n; i++) {
         vertices[i] = new VERTEX;
+        vertices[i]->index = i;
+        vertices[i]->color = WHITE;
+        vertices[i]->key = DBL_MAX;
+        vertices[i]->pi = -1;
+        vertices[i]->position = -1;
+    }
 
-    // allocate adjacency list (array of pNODE)
-    pNODE* adjList = new pNODE[n]; // this is pNODE** when passed
-     
+    // Create adjacency list
+    pNODE* adjList = new pNODE[n];
+    for (int i = 0; i < n; i++) adjList[i] = nullptr;
+
+    // Initialize graph and add edges
     initializeGraph(vertices, adjList, n);
-
-    // add edges
     addEdge(adjList, 0, 1, 2.0);
     addEdge(adjList, 0, 2, 4.0);
     addEdge(adjList, 1, 2, 1.0);
@@ -22,24 +29,28 @@ int main() {
     addEdge(adjList, 2, 4, 3.0);
     addEdge(adjList, 3, 4, 1.0);
 
-    // run dijkstra from vertex 0
+    // Run Dijkstra from vertex 0
     dijkstra(vertices, adjList, 0, n);
 
-    // print shortest path to vertex 4
-    printShortestPath(vertices, 0, 4);
-    std::cout << std::endl;
+    // Print shortest paths
+    for (int i = 0; i < n; i++) {
+        std::cout << "Shortest path to vertex " << i << ": ";
+        printShortestPath(vertices, 0, i);
+        std::cout << std::endl;
+    }
 
-    // cleanup
-    for (int i = 0; i < n; ++i) {
-        delete vertices[i];
-        pNODE node = adjList[i];
-        while (node) {
-            pNODE temp = node;
-            node = node->next;
+    // Free memory
+    for (int i = 0; i < n; i++) delete vertices[i];
+    delete[] vertices;
+
+    for (int i = 0; i < n; i++) {
+        pNODE current = adjList[i];
+        while (current) {
+            pNODE temp = current;
+            current = current->next;
             delete temp;
         }
     }
-    delete[] vertices;
     delete[] adjList;
 
     return 0;
