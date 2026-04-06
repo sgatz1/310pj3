@@ -1,6 +1,8 @@
 #include "util.h"
-#include <cfloat>  // for DBL_MAX
-#include <cstdlib> // for nullptr
+#include "heap.h"
+#include <cfloat>   // DBL_MAX
+#include <cstdlib>  // nullptr
+#include <cstdio>   // printf
 
 // Relax function
 void relax(pVERTEX u, pNODE node, pVERTEX* vertices) {
@@ -13,7 +15,7 @@ void relax(pVERTEX u, pNODE node, pVERTEX* vertices) {
 
 // Dijkstra's algorithm
 void dijkstra(pVERTEX* vertices, pNODE* adjList, int startIndex, int n) {
-    // Initialize
+    // Initialize vertices
     for (int i = 0; i < n; i++) {
         vertices[i]->key = DBL_MAX;
         vertices[i]->pi = -1;
@@ -24,7 +26,7 @@ void dijkstra(pVERTEX* vertices, pNODE* adjList, int startIndex, int n) {
     // Create min-heap
     HEAP* H = createHeap(n);
     for (int i = 0; i < n; i++) {
-        insert(H, vertices[i]);
+        insertHeap(H, vertices[i]);  // use your heap insertion function
     }
 
     // Main loop
@@ -40,8 +42,8 @@ void dijkstra(pVERTEX* vertices, pNODE* adjList, int startIndex, int n) {
     freeHeap(H);
 }
 
-// Initialize graph adjacency list
-void initializeGraph(pVERTEX* vertices, pNODE** adjList, int n) {
+// Initialize graph
+void initializeGraph(pVERTEX* vertices, pNODE* adjList, int n) {
     for (int i = 0; i < n; i++) {
         vertices[i] = new VERTEX;
         vertices[i]->index = i;
@@ -53,8 +55,8 @@ void initializeGraph(pVERTEX* vertices, pNODE** adjList, int n) {
     }
 }
 
-// Add an edge to the adjacency list
-void addEdge(pNODE** adjList, int u, int v, double w) {
+// Add edge
+void addEdge(pNODE* adjList, int u, int v, double w) {
     pNODE newNode = new NODE;
     newNode->index = 0;
     newNode->u = u;
