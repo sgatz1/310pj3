@@ -1,22 +1,26 @@
 #include "graph.h"
-#include <iostream>
-#include <cfloat>  // for DBL_MAX
 
-using namespace std;
-
-void initializeGraph(pVERTEX* vertices, pNODE* adjList[], int n) {
+void initializeGraph(pVERTEX* vertices, pNODE adjList[], int n) {
     for (int i = 0; i < n; i++) {
-        vertices[i] = new TAG_VERTEX{i, DBL_MAX, -1};
+        vertices[i] = new TAG_VERTEX;
+        vertices[i]->index = i;
+        vertices[i]->key = DBL_MAX;
+        vertices[i]->pi = -1;
         adjList[i] = nullptr;
     }
 }
 
-void addEdge(pNODE* adjList[], int u, pVERTEX v, double w) {
-    pNODE newNode = new TAG_NODE{u, v, w, nullptr};
+void addEdge(pNODE adjList[], int u, pVERTEX v, double w) {
+    pNODE newNode = new TAG_NODE;
+    newNode->u = u;
+    newNode->v = v;
+    newNode->w = w;
+    newNode->next = nullptr;
+
     if (!adjList[u]) {
         adjList[u] = newNode;
     } else {
-        TAG_NODE* curr = adjList[u];
+        pNODE curr = adjList[u];
         while (curr->next)
             curr = curr->next;
         curr->next = newNode;
@@ -30,23 +34,22 @@ void relax(pVERTEX u, pNODE node) {
     }
 }
 
-void dijkstra(pVERTEX* vertices, pNODE* adjList[], int startIndex, int n) {
-    vertices[startIndex]->key = 0.0;
+void dijkstra(pVERTEX* vertices, pNODE adjList[], int startIndex, int n) {
+    vertices[startIndex]->key = 0;
 
-    bool visited[n] = {false};
+    bool visited[n] = { false };
 
-    for (int i = 0; i < n; i++) {
-        int uIndex = -1;
+    for (int count = 0; count < n; count++) {
+        // find vertex with smallest key
         double minKey = DBL_MAX;
-        for (int j = 0; j < n; j++) {
-            if (!visited[j] && vertices[j]->key < minKey) {
-                minKey = vertices[j]->key;
-                uIndex = j;
+        int uIndex = -1;
+        for (int i = 0; i < n; i++) {
+            if (!visited[i] && vertices[i]->key < minKey) {
+                minKey = vertices[i]->key;
+                uIndex = i;
             }
         }
-
         if (uIndex == -1) break;
-
         visited[uIndex] = true;
 
         for (pNODE node = adjList[uIndex]; node != nullptr; node = node->next) {
