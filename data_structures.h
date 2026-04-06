@@ -1,27 +1,22 @@
-#pragma once
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
 
-enum COLOR { WHITE, GRAY, BLACK };
+#include <cfloat>   // DBL_MAX
+#include <cstdlib>  // nullptr
 
-typedef struct TAG_VERTEX {
+struct TAG_VERTEX {
     int index;
-    COLOR color;
     double key;
-    int pi;
-    int position; // position in min-heap
-} VERTEX;
+    int pi; // predecessor
+};
+typedef TAG_VERTEX* pVERTEX;
 
-typedef VERTEX* pVERTEX;
-
-typedef struct TAG_NODE {
-    int index;   // edge index
+struct TAG_NODE {
     int u;
     int v;
     double w;
     TAG_NODE* next;
-} NODE;
+};
+typedef TAG_NODE* pNODE;
 
-typedef NODE* pNODE;
-
-#endif // DATA_STRUCTURES_H
+#endif
