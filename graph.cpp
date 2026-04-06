@@ -1,27 +1,25 @@
-#include "graph.h"
 #include <iostream>
 #include <limits>
-#include <queue>
+#include "graph.h"
+#include "data_structures.h"
 
-using namespace std;
-
-// Initialize vertices and adjacency list
+// initialize vertices and adjacency list
 void initializeGraph(pVERTEX* vertices, pNODE** adjList, int n) {
-    for (int i = 0; i < n; i++) {
-        vertices[i] = new VERTEX;
+    for (int i = 0; i < n; ++i) {
         vertices[i]->index = i;
         vertices[i]->color = WHITE;
-        vertices[i]->key = numeric_limits<double>::infinity();
+        vertices[i]->key = std::numeric_limits<double>::infinity();
         vertices[i]->pi = -1;
         vertices[i]->position = -1;
 
-        adjList[i] = nullptr;
+        adjList[i] = nullptr; // initialize linked list to empty
     }
 }
 
-// Add edge u -> v with weight w
+// add edge u -> v with weight w
 void addEdge(pNODE** adjList, int u, int v, double w) {
     pNODE newNode = new NODE;
+    newNode->index = v;
     newNode->u = u;
     newNode->v = v;
     newNode->w = w;
@@ -29,45 +27,52 @@ void addEdge(pNODE** adjList, int u, int v, double w) {
     adjList[u] = newNode;
 }
 
-// Relax edge u -> v
-void relax(pVERTEX* u, pNODE node) {
-    pVERTEX v = nullptr; // we will set this in dijkstra
+// relax edges
+void relax(pVERTEX u, pNODE node, pVERTEX* vertices) {
+    pVERTEX v = vertices[node->v];
+    if (v->key > u->key + node->w) {
+        v->key = u->key + node->w;
+        v->pi = u->index;
+    }
 }
 
-// Dijkstra's algorithm
+// dijkstra algorithm
 void dijkstra(pVERTEX* vertices, pNODE** adjList, int startIndex, int n) {
     vertices[startIndex]->key = 0;
 
-    // Min-priority queue: pair<key, vertex_index>
-    auto cmp = [](pair<double,int> a, pair<double,int> b){ return a.first > b.first; };
-    priority_queue<pair<double,int>, vector<pair<double,int>>, decltype(cmp)> pq(cmp);
+    // simple array-based priority queue
+    bool finished[n];
+    for (int i = 0; i < n; ++i) finished[i] = false;
 
-    pq.push({0, startIndex});
-
-    while (!pq.empty()) {
-        auto [dist, uIndex] = pq.top(); pq.pop();
-        pNODE node = adjList[uIndex];
-
-        while (node != nullptr) {
-            int vIndex = node->v;
-            if (vertices[vIndex]->key > vertices[uIndex]->key + node->w) {
-                vertices[vIndex]->key = vertices[uIndex]->key + node->w;
-                vertices[vIndex]->pi = uIndex;
-                pq.push({vertices[vIndex]->key, vIndex});
+    for (int count = 0; count < n; ++count) {
+        // find min key vertex
+        double minKey = std::numeric_limits<double>::infinity();
+        int uIndex = -1;
+        for (int i = 0; i < n; ++i) {
+            if (!finished[i] && vertices[i]->key < minKey) {
+                minKey = vertices[i]->key;
+                uIndex = i;
             }
+        }
+        if (uIndex == -1) break; // all done
+
+        finished[uIndex] = true;
+        pNODE node = adjList[uIndex];
+        while (node != nullptr) {
+            relax(vertices[uIndex], node, vertices);
             node = node->next;
         }
     }
 }
 
-// Print shortest path from start to end
+// print shortest path from start to end
 void printShortestPath(pVERTEX* vertices, int startIndex, int endIndex) {
     if (endIndex == startIndex) {
-        cout << startIndex;
+        std::cout << startIndex;
     } else if (vertices[endIndex]->pi == -1) {
-        cout << "No path";
+        std::cout << "No path";
     } else {
         printShortestPath(vertices, startIndex, vertices[endIndex]->pi);
-        cout << " -> " << endIndex;
+        std::cout << " -> " << endIndex;
     }
 }
