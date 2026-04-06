@@ -6,16 +6,13 @@
 int main() {
     int n = 5; // number of vertices
     pVERTEX vertices[n];
-    pNODE* adjList[n];
+    pNODE* adjList[n];  // array of TAG_NODE* (correct)
 
-    // Allocate vertices
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
         vertices[i] = new TAG_VERTEX;
-    }
 
     initializeGraph(vertices, adjList, n);
 
-    // Add edges
     addEdge(adjList, 0, vertices[1], 2.0);
     addEdge(adjList, 0, vertices[2], 4.0);
     addEdge(adjList, 1, vertices[2], 1.0);
@@ -25,7 +22,6 @@ int main() {
 
     dijkstra(vertices, adjList, 0, n);
 
-    // Print shortest paths from vertex 0
     for (int i = 0; i < n; i++) {
         printf("Shortest path to %d: ", i);
         printShortestPath(vertices, 0, i);
