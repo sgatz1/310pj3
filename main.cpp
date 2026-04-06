@@ -1,42 +1,47 @@
-#include <cstdio>
 #include "graph.h"
 #include <cfloat>
+#include <cstdio>
+#include <cstdlib>
 
 int main() {
-    int n = 5;
-    pVERTEX* vertices = new pVERTEX[n];
-    pNODE* adjList = new pNODE[n];
+    int n = 5; // number of vertices
+    pVERTEX vertices[n];
+    pNODE* adjList[n];
+
+    // Allocate vertices
+    for (int i = 0; i < n; i++) {
+        vertices[i] = new TAG_VERTEX;
+    }
 
     initializeGraph(vertices, adjList, n);
 
-    addEdge(adjList, 0, 1, 2.0);
-    addEdge(adjList, 0, 2, 4.0);
-    addEdge(adjList, 1, 2, 1.0);
-    addEdge(adjList, 1, 3, 7.0);
-    addEdge(adjList, 2, 4, 3.0);
-    addEdge(adjList, 3, 4, 1.0);
+    // Add edges
+    addEdge(adjList, 0, vertices[1], 2.0);
+    addEdge(adjList, 0, vertices[2], 4.0);
+    addEdge(adjList, 1, vertices[2], 1.0);
+    addEdge(adjList, 1, vertices[3], 7.0);
+    addEdge(adjList, 2, vertices[4], 3.0);
+    addEdge(adjList, 3, vertices[4], 1.0);
 
     dijkstra(vertices, adjList, 0, n);
 
-    for (int i = 0; i < n; ++i) {
-        printf("Vertex %d: shortest distance = %.2f, path = ", i, vertices[i]->key);
+    // Print shortest paths from vertex 0
+    for (int i = 0; i < n; i++) {
+        printf("Shortest path to %d: ", i);
         printShortestPath(vertices, 0, i);
-        printf("\n");
+        printf("\nDistance: %.2f\n", vertices[i]->key);
     }
 
-    // clean up
-    for (int i = 0; i < n; ++i) delete vertices[i];
-    for (int i = 0; i < n; ++i) {
-        pNODE node = adjList[i];
-        while (node) {
-            pNODE temp = node;
-            node = node->next;
+    // Clean up
+    for (int i = 0; i < n; i++) delete vertices[i];
+    for (int i = 0; i < n; i++) {
+        TAG_NODE* curr = adjList[i];
+        while (curr) {
+            TAG_NODE* temp = curr;
+            curr = curr->next;
             delete temp;
         }
     }
-    delete[] vertices;
-    delete[] adjList;
 
     return 0;
-}
 }
