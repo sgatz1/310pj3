@@ -1,14 +1,12 @@
-#pragma 
+#pragma once
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <vector>
-#include <string>
-#include <limits>
+#include "data_structures.h"
 
-void dijkstra(int start, const std::vector<std::vector<std::pair<int, double>>>& adj,
-    std::vector<double>& dist, std::vector<int>& prev);
+// Original utility functions
+void printVertex(pVERTEX v);
+void printNode(pNODE node);
+void freeAdjList(pNODE* adjList, int n);
 
-void printPath(int target, const std::vector<int>& prev);
-
-#endif
+#endif // UTIL_H
