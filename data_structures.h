@@ -2,9 +2,6 @@
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
 
-#include <cfloat>
-
-// Graph structs
 enum COLOR { WHITE, GRAY, BLACK };
 
 typedef struct TAG_VERTEX {
@@ -22,32 +19,9 @@ typedef struct TAG_NODE {
     int u;
     int v;
     double w;
-    struct TAG_NODE* next;
+    TAG_NODE* next;
 } NODE;
 
 typedef NODE* pNODE;
-
-// Stack/Heap structs
-typedef struct TAG_ELEMENT {
-    int data; // or double if needed
-} ELEMENT;
-
-typedef ELEMENT* pELEMENT;
-
-typedef struct TAG_STACK {
-    pELEMENT* arr;
-    int top;
-    int capacity;
-} STACK;
-
-typedef STACK* pSTACK;
-
-typedef struct TAG_HEAP {
-    pELEMENT* arr;
-    int size;
-    int capacity;
-} HEAP;
-
-typedef HEAP* pHEAP;
 
 #endif // DATA_STRUCTURES_H
