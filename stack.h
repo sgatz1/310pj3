@@ -1,19 +1,19 @@
 #pragma once
-#include "data_structures.h"
-#include <stdbool.h>
+#ifndef STACK_H
+#define STACK_H
 
-// Stack structure
+#include "data_structures.h" // ensures ELEMENT and pELEMENT are defined
+
 typedef struct TAG_STACK {
     int top;
     int capacity;
     pELEMENT* arr;  // array of ELEMENT pointers
-} STACK;
+} STACK, *pSTACK;
 
-typedef STACK* pSTACK;
-
-// Stack functions
 pSTACK createStack(int capacity);
 void push(pSTACK S, pELEMENT item);
 pELEMENT pop(pSTACK S);
-bool isEmpty(pSTACK S);
-bool isFull(pSTACK S);
+bool isEmptyStack(pSTACK S);
+void freeStack(pSTACK S);
+
+#endif // STACK_H
