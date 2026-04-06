@@ -4,16 +4,16 @@
 
 #include "data_structures.h"
 
-// Initialize the graph adjacency list
+// initialize adjacency list for n vertices
 void initializeGraph(pVERTEX* vertices, pNODE** adjList, int n);
 
-// Add an edge to the adjacency list
+// add an edge u -> v with weight w
 void addEdge(pNODE** adjList, int u, int v, double w);
 
-// Dijkstra's algorithm
+// dijkstra algorithm
 void dijkstra(pVERTEX* vertices, pNODE** adjList, int startIndex, int n);
 
-// Print shortest path from startIndex to endIndex
+// print shortest path from start to end
 void printShortestPath(pVERTEX* vertices, int startIndex, int endIndex);
 
 #endif // GRAPH_H
