@@ -1,28 +1,31 @@
 #include "stack.h"
 #include <cstdlib>
-#include "heap.h"
+#include <iostream>
 
 pSTACK createStack(int capacity) {
-    pSTACK stack = (pSTACK)malloc(sizeof(STACK));
-    stack->capacity = capacity;
-    stack->top = -1;
-    stack->arr = (pELEMENT*)malloc(capacity * sizeof(pELEMENT));
-    return stack;
+    pSTACK S = new STACK;
+    S->top = -1;
+    S->capacity = capacity;
+    S->arr = new pELEMENT[capacity];
+    return S;
 }
 
-void push(pSTACK stack, pELEMENT elem) {
-    if (stack->top < stack->capacity - 1)
-        stack->arr[++stack->top] = elem;
+void push(pSTACK S, pELEMENT item) {
+    if (S->top < S->capacity - 1)
+        S->arr[++S->top] = item;
 }
 
-pELEMENT pop(pSTACK stack) {
-    if (stack->top >= 0) return stack->arr[stack->top--];
+pELEMENT pop(pSTACK S) {
+    if (S->top >= 0)
+        return S->arr[S->top--];
     return nullptr;
 }
 
-bool isEmpty(pSTACK stack) { return stack->top == -1; }
+bool isEmpty(pSTACK S) {
+    return S->top == -1;
+}
 
-void freeStack(pSTACK stack) {
-    free(stack->arr);
-    free(stack);
+void freeStack(pSTACK S) {
+    delete[] S->arr;
+    delete S;
 }
