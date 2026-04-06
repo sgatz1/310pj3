@@ -1,18 +1,29 @@
 #include "graph.h"
+#include <iostream>
+#include <cstdlib>
 
-Graph::Graph(int nodes) : n(nodes) {
-    adjList.resize(n);
+void initializeGraph(pVERTEX* &vertices, pNODE* &adjList, int n) {
+    vertices = new pVERTEX[n];
+    adjList = new pNODE[n];
+    for (int i = 0; i < n; i++) {
+        vertices[i] = new VERTEX{ i, WHITE, 1e9, -1, -1 };
+        adjList[i] = nullptr;
+    }
 }
 
-void Graph::addEdge(int from, int to, double weight) {
-    Edge e = { to, weight };
-    adjList[from].push_back(e);
+void addEdge(pNODE* adjList, int u, int v, double w) {
+    pNODE newNode = new NODE{ -1, u, v, w, adjList[u] };
+    adjList[u] = newNode;
 }
 
-int Graph::size() const {
-    return n;
-}
-
-const std::vector<Edge>& Graph::neighbors(int node) const {
-    return adjList[node];
+void printGraph(pVERTEX* vertices, pNODE* adjList, int n) {
+    for (int i = 0; i < n; i++) {
+        std::cout << "Vertex " << i << ":";
+        pNODE curr = adjList[i];
+        while (curr != nullptr) {
+            std::cout << " -> (" << curr->v << ", " << curr->w << ")";
+            curr = curr->next;
+        }
+        std::cout << std::endl;
+    }
 }
