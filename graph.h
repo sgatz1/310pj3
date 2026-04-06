@@ -1,25 +1,19 @@
-#pragma once#ifndef GRAPH_H
+#pragma once
+#ifndef GRAPH_H
 #define GRAPH_H
 
-#include <vector>
-#include <string>
-#include <limits>
+#include "data_structures.h"
 
-struct Edge {
-    int to;
-    double weight;
-};
+// initialize single-source distances
+void initializeSingleSource(pVERTEX* vertices, int n, int startIndex);
 
-class Graph {
-private:
-    int n; // number of nodes
-    std::vector<std::vector<Edge>> adjList;
+// relax edges
+void relax(pVERTEX u, pNODE node);
 
-public:
-    Graph(int nodes);
-    void addEdge(int from, int to, double weight);
-    int size() const;
-    const std::vector<Edge>& neighbors(int node) const;
-};
+// dijkstra algorithm
+void dijkstra(pVERTEX* vertices, pNODE* adjList, int startIndex, int n);
 
-#endif
+// print shortest path
+void printShortestPath(pVERTEX* vertices, int startIndex, int endIndex);
+
+#endif // GRAPH_H
