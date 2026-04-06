@@ -1,21 +1,24 @@
-#pragma once
 #ifndef HEAP_H
 #define HEAP_H
 
-#include "data_structures.h"
+#include <cfloat>
+#include <cstdlib>
 
-typedef struct TAG_HEAP {
-    pVERTEX* arr;  // array of pointers to vertices
+struct TAG_ELEMENT;
+typedef TAG_ELEMENT* pELEMENT;
+
+struct TAG_HEAP {
     int size;
     int capacity;
-} HEAP, *pHEAP;
+    pELEMENT* arr;  // array of ELEMENT pointers
+};
 
-// Heap functions
+typedef TAG_HEAP* pHEAP;
+
 pHEAP createHeap(int capacity);
-void freeHeap(pHEAP H);
+void insert(pHEAP H, pELEMENT item);
+pELEMENT extractMin(pHEAP H);
 bool isEmpty(pHEAP H);
-void insertHeap(pHEAP H, pVERTEX v);
-pVERTEX extractMin(pHEAP H);
-void decreaseKey(pHEAP H, int i, double newKey);
+void freeHeap(pHEAP H);
 
-#endif // HEAP_H
+#endif
