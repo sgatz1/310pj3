@@ -4,16 +4,16 @@
 
 #include "data_structures.h"
 
-// initialize single-source distances
-void initializeSingleSource(pVERTEX* vertices, int n, int startIndex);
+// Initialize the graph adjacency list
+void initializeGraph(pVERTEX* vertices, pNODE** adjList, int n);
 
-// relax edges
-void relax(pVERTEX u, pNODE node);
+// Add an edge to the adjacency list
+void addEdge(pNODE** adjList, int u, int v, double w);
 
-// dijkstra algorithm
-void dijkstra(pVERTEX* vertices, pNODE* adjList, int startIndex, int n);
+// Dijkstra's algorithm
+void dijkstra(pVERTEX* vertices, pNODE** adjList, int startIndex, int n);
 
-// print shortest path
+// Print shortest path from startIndex to endIndex
 void printShortestPath(pVERTEX* vertices, int startIndex, int endIndex);
 
 #endif // GRAPH_H
