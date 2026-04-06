@@ -1,76 +1,44 @@
 #include "heap.h"
-#include <limits>
-#include <cstdlib>
+#include <algorithm>
 
 pHEAP createHeap(int capacity) {
-    pHEAP H = new HEAP;
-    H->arr = new pVERTEX[capacity];
-    H->size = 0;
-    H->capacity = capacity;
+    pHEAP H = new TAG_HEAP{0, capacity, new pELEMENT[capacity]};
     return H;
 }
 
-void freeHeap(pHEAP H) {
-    delete[] H->arr;
-    delete H;
+void insert(pHEAP H, pELEMENT item) {
+    if (H->size >= H->capacity) return;
+    int i = H->size++;
+    H->arr[i] = item;
+    while (i != 0 && H->arr[(i - 1) / 2]->key > H->arr[i]->key) {
+        std::swap(H->arr[i], H->arr[(i - 1) / 2]);
+        i = (i - 1) / 2;
+    }
+}
+
+pELEMENT extractMin(pHEAP H) {
+    if (H->size <= 0) return nullptr;
+    pELEMENT root = H->arr[0];
+    H->arr[0] = H->arr[--H->size];
+    int i = 0;
+    while (true) {
+        int l = 2 * i + 1, r = 2 * i + 2;
+        int smallest = i;
+        if (l < H->size && H->arr[l]->key < H->arr[smallest]->key) smallest = l;
+        if (r < H->size && H->arr[r]->key < H->arr[smallest]->key) smallest = r;
+        if (smallest != i) {
+            std::swap(H->arr[i], H->arr[smallest]);
+            i = smallest;
+        } else break;
+    }
+    return root;
 }
 
 bool isEmpty(pHEAP H) {
     return H->size == 0;
 }
 
-void swap(pVERTEX& a, pVERTEX& b) {
-    pVERTEX temp = a;
-    a = b;
-    b = temp;
-
-    // Update positions
-    int tempPos = a->position;
-    a->position = b->position;
-    b->position = tempPos;
-}
-
-// Heapify down
-void minHeapify(pHEAP H, int i) {
-    int left = 2*i + 1;
-    int right = 2*i + 2;
-    int smallest = i;
-
-    if (left < H->size && H->arr[left]->key < H->arr[smallest]->key)
-        smallest = left;
-    if (right < H->size && H->arr[right]->key < H->arr[smallest]->key)
-        smallest = right;
-
-    if (smallest != i) {
-        swap(H->arr[i], H->arr[smallest]);
-        minHeapify(H, smallest);
-    }
-}
-
-pVERTEX extractMin(pHEAP H) {
-    if (H->size <= 0) return nullptr;
-    pVERTEX min = H->arr[0];
-    H->arr[0] = H->arr[H->size - 1];
-    H->arr[0]->position = 0;
-    H->size--;
-    minHeapify(H, 0);
-    return min;
-}
-
-void decreaseKey(pHEAP H, int i, double newKey) {
-    H->arr[i]->key = newKey;
-    while (i != 0 && H->arr[(i-1)/2]->key > H->arr[i]->key) {
-        int parent = (i-1)/2;
-        swap(H->arr[i], H->arr[parent]);
-        i = parent;
-    }
-}
-
-void insertHeap(pHEAP H, pVERTEX v) {
-    if (H->size == H->capacity) return; // ignore overflow
-    int i = H->size;
-    H->arr[i] = v;
-    v->position = i;
-    H->size++;
-    decreaseKey(H, i, v->key);
+void freeHeap(pHEAP H) {
+    delete[] H->arr;
+    delete H;
 }
