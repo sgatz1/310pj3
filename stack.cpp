@@ -1,17 +1,16 @@
 #include "stack.h"
-#include <cstdlib>
-#include <iostream>
+#include <cstdlib> // for nullptr
 
 pSTACK createStack(int capacity) {
     pSTACK S = new STACK;
     S->top = -1;
     S->capacity = capacity;
-    S->arr = new pELEMENT[capacity];
+    S->arr = new pELEMENT[capacity];  // now pELEMENT is defined
     return S;
 }
 
 void push(pSTACK S, pELEMENT item) {
-    if (S->top < S->capacity - 1)
+    if (S->top + 1 < S->capacity)
         S->arr[++S->top] = item;
 }
 
@@ -21,7 +20,7 @@ pELEMENT pop(pSTACK S) {
     return nullptr;
 }
 
-bool isEmpty(pSTACK S) {
+bool isEmptyStack(pSTACK S) {
     return S->top == -1;
 }
 
