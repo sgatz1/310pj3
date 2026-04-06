@@ -1,41 +1,52 @@
 #include "util.h"
+#include "heap.h"
 #include <iostream>
-#include <queue>
-#include <functional>
 
-void dijkstra(int start, const std::vector<std::vector<std::pair<int, double>>>& adj,
-    std::vector<double>& dist, std::vector<int>& prev) {
-    int n = adj.size();
-    dist.assign(n, std::numeric_limits<double>::infinity());
-    prev.assign(n, -1);
+void initializeSingleSource(pVERTEX* vertices, int n, int s) {
+    for (int i = 0; i < n; i++) {
+        vertices[i]->key = 1e9;
+        vertices[i]->pi = -1;
+        vertices[i]->color = WHITE;
+    }
+    vertices[s]->key = 0;
+}
 
-    using PDI = std::pair<double, int>;
-    std::priority_queue<PDI, std::vector<PDI>, std::greater<PDI>> pq;
-
-    dist[start] = 0;
-    pq.push({ 0, start });
-
-    while (!pq.empty()) {
-        double d = pq.top().first;
-        int u = pq.top().second;
-        pq.pop();
-
-        if (d > dist[u]) continue;
-
-        for (auto& edge : adj[u]) {
-            int v = edge.first;
-            double w = edge.second;
-            if (dist[u] + w < dist[v]) {
-                dist[v] = dist[u] + w;
-                prev[v] = u;
-                pq.push({ dist[v], v });
-            }
-        }
+void relax(VERTEX* u, VERTEX* v, double w) {
+    if (v->key > u->key + w) {
+        v->key = u->key + w;
+        v->pi = u->index;
     }
 }
 
-void printPath(int target, const std::vector<int>& prev) {
-    if (target == -1) return;
-    printPath(prev[target], prev);
-    std::cout << target << " ";
+void dijkstra(pVERTEX* vertices, pNODE* adjList, int s, int n) {
+    initializeSingleSource(vertices, n, s);
+
+    pHEAP H = createHeap(n);
+    for (int i = 0; i < n; i++) {
+        H->arr[i] = vertices[i];
+        H->size++;
+    }
+
+    while (!isEmpty(H)) {
+        pVERTEX u = extractMin(H);
+        pNODE edge = adjList[u->index];
+        while (edge != nullptr) {
+            relax(u, vertices[edge->v], edge->w);
+            edge = edge->next;
+        }
+    }
+
+    freeHeap(H);
+}
+
+void printShortestPath(pVERTEX* vertices, int s, int v) {
+    if (v == s) {
+        std::cout << s;
+    } else if (vertices[v]->pi == -1) {
+        std::cout << "No path";
+    } else {
+        printShortestPath(vertices, s, vertices[v]->pi);
+        std::cout << " -> " << v;
+    }
+    std::cout << std::endl;
 }
