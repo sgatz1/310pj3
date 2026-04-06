@@ -1,15 +1,12 @@
 #include "graph.h"
-#include <cfloat>
-#include <cstdio>
-#include <cstdlib>
+#include <cfloat>  // for DBL_MAX
+#include <iostream>
+using namespace std;
 
 int main() {
-    int n = 5; // number of vertices
+    const int n = 5;
     pVERTEX vertices[n];
-    pNODE* adjList[n];  // array of TAG_NODE* (correct)
-
-    for (int i = 0; i < n; i++)
-        vertices[i] = new TAG_VERTEX;
+    pNODE* adjList[n];
 
     initializeGraph(vertices, adjList, n);
 
@@ -22,14 +19,16 @@ int main() {
 
     dijkstra(vertices, adjList, 0, n);
 
+    // Print adjacency list
     for (int i = 0; i < n; i++) {
-        printf("Shortest path to %d: ", i);
-        printShortestPath(vertices, 0, i);
-        printf("\nDistance: %.2f\n", vertices[i]->key);
+        cout << "ADJ[" << i+1 << "]:";
+        for (pNODE curr = adjList[i]; curr != nullptr; curr = curr->next) {
+            cout << "-->[" << curr->u+1 << " " << curr->v->index+1 << ": " << curr->w << "]";
+        }
+        cout << endl;
     }
 
     // Clean up
-    for (int i = 0; i < n; i++) delete vertices[i];
     for (int i = 0; i < n; i++) {
         TAG_NODE* curr = adjList[i];
         while (curr) {
@@ -37,6 +36,7 @@ int main() {
             curr = curr->next;
             delete temp;
         }
+        delete vertices[i];
     }
 
     return 0;
